@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+        clearGame()
     }
     func clearGame() {
         buttonState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
             let button = view.viewWithTag(tag) as! UIButton
             button.setBackgroundImage(nil, for: .normal)
         }
-        //imageArray.shuffle()
+        imageArray.shuffle()
     }
     
     @IBAction func game(_ sender: UIButton) {
