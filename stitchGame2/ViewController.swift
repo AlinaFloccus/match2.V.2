@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var timerLabel: UILabel!
     
     var imageArray = ["Austria", "Denmark", "France", "Italy", "Netherlands", "Norway", "Sweden", "Switzerland", "Austria", "Denmark", "France", "Italy", "Netherlands", "Norway", "Sweden", "Switzerland"]
     
@@ -16,11 +17,44 @@ class ViewController: UIViewController {
     
     var firstMove = 0
     
+    var timeScore = 0
+    
+    var timer: Timer?
+    var seconds = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        clearGame()
     }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+       
+        
+        let start = UIAlertController(title: "", message:"", preferredStyle: .alert)
+                
+        start.addAction(UIAlertAction(title: "Начать игру", style: .default, handler: { [self] action in
+            self.clearGame()
+        }))
+        self.present(start, animated: true, completion: nil)
+    }
+
+
+    @objc func timerScore() {
+        seconds += 1
+        
+        var text = ""
+        var minutes = seconds / 60
+        
+        if minutes > 0 {
+            text += "\(minutes) мин., "
+        }
+        text += "\(seconds % 60) сек."
+        
+        timerLabel.text = text
+        print("seconds is \(seconds)")
+    }
+    
     func clearGame() {
         buttonState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         firstMove = 0
@@ -29,8 +63,13 @@ class ViewController: UIViewController {
             let button = view.viewWithTag(tag) as! UIButton
             button.setBackgroundImage(nil, for: .normal)
         }
+        
+        timer?.invalidate()
+        seconds = 0
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerScore), userInfo: nil, repeats: true)
         imageArray.shuffle()
     }
+    
     
     @IBAction func game(_ sender: UIButton) {
         print("в начале \(isOpened)")
@@ -90,7 +129,16 @@ class ViewController: UIViewController {
         if sumArray < 16 {
             return
         } else {
-            let alert = UIAlertController(title: "Игра закончена!", message:"", preferredStyle: .alert)
+            var text = ""
+            var minutes = seconds / 60
+            
+            if minutes > 0 {
+                text += "\(minutes) мин., "
+            }
+            text += "\(seconds % 60) сек."
+            
+            let alert = UIAlertController(title: "Игра закончена!", message:"Вы прошли игру за \(text)", preferredStyle: .alert)
+            timer?.invalidate()
                     
                     alert.addAction(UIAlertAction(title: "Начать заново", style: .default, handler: { [self] action in
                         self.clearGame()
